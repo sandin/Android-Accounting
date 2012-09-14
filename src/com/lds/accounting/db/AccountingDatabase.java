@@ -4,18 +4,21 @@ import java.sql.SQLException;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+import com.lds.accounting.inputParser.Category;
+import com.lds.accounting.inputParser.Contact;
+import com.lds.accounting.inputParser.Row;
+import com.lds.accounting.inputParser.Tag;
 import com.lds.accounting.model.Bill;
 
 public class AccountingDatabase {
 	private static final String TAG = "AccountingDatabase";
 	private static final String DATABASE_NAME = "accounting.db";
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 	
 	private OrmLiteSqliteOpenHelper sqliteOpenHelper;
 	private Context mContext;
@@ -66,6 +69,11 @@ public class AccountingDatabase {
 			try {
 				Log.i(DatabaseHelper.class.getName(), "onCreate");
 				TableUtils.createTable(connectionSource, Bill.class);
+				
+				TableUtils.createTable(connectionSource, Category.class);
+				TableUtils.createTable(connectionSource, Contact.class);
+				TableUtils.createTable(connectionSource, Row.class);
+				TableUtils.createTable(connectionSource, Tag.class);
 			} catch (SQLException e) {
 				Log.e(DatabaseHelper.class.getName(), "Can't create database", e);
 				throw new RuntimeException(e);
