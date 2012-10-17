@@ -17,6 +17,10 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
+import com.lds.accounting.dao.CategoryDao;
+import com.lds.accounting.dao.RowDao;
+import com.lds.accounting.db.AccountDatabase;
+import com.lds.accounting.inputParser.Category;
 import com.lds.accounting.inputParser.InputParser;
 import com.lds.accounting.inputParser.Row;
 import com.libs4and.widget.ArrayAdapter;
@@ -28,11 +32,17 @@ public class MainActivity extends Activity {
     private ListAdapter adapter;
     private EditText editText;
     
+    private RowDao rowDao;
+    private CategoryDao categoryDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        
+        AccountDatabase database = AccountDatabase.getInstance(this);
+        rowDao = new RowDao(database);
+        categoryDao = new CategoryDao(database);
         
         initViews();
         onRefresh();
@@ -60,15 +70,29 @@ public class MainActivity extends Activity {
     private void onInputDone(String input) {
         Log.i(TAG, "input: " + input);
         Row row = InputParser.parse(input);
+        
+        // handle Category
+        Category category = row.getCategory();
+        long categoryId = -1;
+        if (category != null) {
+            // find category id
+            Category c = categoryDao.findByName(category.getName());
+            if (c != null) { // use the exist id
+                categoryId = c.getId();
+            } else { // or create a new one
+                categoryId = categoryDao.insert(category);
+            }
+        }
+        row.setCategoryId(categoryId);
         Log.i(TAG, "row: " + row);
-        RowDao.getInstance(this).insert(row);
+        rowDao.insert(row);
         
         onRefresh();
     }
     
     private void onRefresh() {
         List<Row> list = null;
-        list = RowDao.getInstance(this).queryForAll();
+        list = new RowDao(AccountDatabase.getInstance(this)).queryForAll();
         System.out.println("list:" + list);
         if (list != null) {
             adapter.refresh(list);
@@ -85,7 +109,6 @@ public class MainActivity extends Activity {
 
         public ListAdapter(Context context) {
             super(context);
-            // TODO Auto-generated constructor stub
         }
 
         @Override
@@ -107,9 +130,15 @@ public class MainActivity extends Activity {
             
             Date date = bean.getDate();
             if (date != null) {
-                holder.date.setText(date.toLocaleString());
+                holder.date.setText(AccountDatabase.datetimeFormat.format(date).substring(0, 10));
             }
-            holder.summary.setText(bean.getContent());
+            String content = null;
+            if (bean.getCategory() != null) {
+                content = "[" + bean.getCategory().getName() + "] " + bean.getSummary();
+            } else {
+                content = bean.getSummary();
+            }
+            holder.summary.setText(content);
             holder.price.setText(bean.getPrice()+"");
             
             return view;

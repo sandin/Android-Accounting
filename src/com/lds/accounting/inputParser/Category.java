@@ -11,7 +11,7 @@ public class Category implements Part {
 
     public Category() {
     }
-
+    
     public Category(String name) {
         this.name = name;
     }

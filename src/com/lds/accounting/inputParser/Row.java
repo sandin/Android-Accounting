@@ -25,6 +25,8 @@ public class Row {
 
     private Category category;
     
+    private long category_id;
+    
     private List<Tag> tags;
     
     private List<Contact> contacts = new ArrayList<Contact>();
@@ -119,14 +121,22 @@ public class Row {
         this.contacts = contacts;
     }
 
+    public long getCategoryId() {
+        return category_id;
+    }
+
+
+    public void setCategoryId(long category_id) {
+        this.category_id = category_id;
+    }
+
+
     @Override
     public String toString() {
         return "Row [id=" + id + ", summary=" + summary + ", content="
                 + content + ", note=" + note + ", price=" + price + ", date="
                 + date + ", direction=" + direction + ", category=" + category
-                + ", tags=" + tags + ", contacts=" + contacts + "]";
+                + ", category_id=" + category_id + ", tags=" + tags
+                + ", contacts=" + contacts + "]";
     }
-
-
-    
 }

@@ -4,6 +4,16 @@
     android:layout_height="fill_parent"
     android:orientation="vertical"
      >
+     
+    
+    <!-- 
+    <ImageView android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="2"
+        android:src="@drawable/ic_launcher"
+        android:scaleType="fitXY"
+        />
+     -->
     
     <ListView android:id="@+id/list"
         android:layout_width="fill_parent"
