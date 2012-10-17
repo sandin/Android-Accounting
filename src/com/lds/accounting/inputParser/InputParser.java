@@ -25,7 +25,7 @@ public class InputParser {
         for (int i = 0, l = list.size(); i < l; i++) {
             String str = list.get(i);
             if (str.startsWith("#")) {
-                row.addCategory(new Category(str.substring(1)));
+                row.setCategory(new Category(str.substring(1)));
                 continue;
             }
             if (str.startsWith("@")) {

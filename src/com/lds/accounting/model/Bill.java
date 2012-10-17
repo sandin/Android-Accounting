@@ -2,43 +2,33 @@ package com.lds.accounting.model;
 
 import java.util.Date;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
-
-@DatabaseTable(tableName = "bills")
 public class Bill {
 	
-	@DatabaseField(generatedId = true)
 	private int id;
 	
 	/**
 	 * 摘要
 	 */
-	@DatabaseField
 	private String summary;
 	
 	/**
 	 * 借方金额
 	 */
-	@DatabaseField
 	private double income;
 	
 	/**
 	 * 贷方金额
 	 */
-	@DatabaseField
 	private double outlay;
 	
 	/**
 	 * 借贷
 	 */
-	@DatabaseField
 	private int direction;
 	
 	/**
 	 * 日期
 	 */
-	@DatabaseField
 	private Date date;
 	
 	public Bill() {

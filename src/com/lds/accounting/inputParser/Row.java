@@ -4,69 +4,41 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.j256.ormlite.dao.ForeignCollection;
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.field.ForeignCollectionField;
-import com.j256.ormlite.table.DatabaseTable;
-
-@DatabaseTable(tableName="row")
 public class Row {
 
-    @DatabaseField(generatedId=true)
     private long id;
 
-    @DatabaseField
     private String summary;
     
-    @DatabaseField
     private String content; // orig input
     
-    @DatabaseField
     private String note;
     
-    @DatabaseField
     private double price;
     
-    @DatabaseField
     private Date date;
     
     /**
      * 借贷方向(true为进，false为出)
      */
-    @DatabaseField
     private boolean direction;  
 
-    @ForeignCollectionField(eager = false)
-    private ForeignCollection<Category> categories;
+    private Category category;
     
-    @ForeignCollectionField(eager = false)
-    private ForeignCollection<Tag> tags;
+    private List<Tag> tags;
     
-    @ForeignCollectionField(eager = false)
-    private ForeignCollection<Contact> contacts;
+    private List<Contact> contacts = new ArrayList<Contact>();
     
-    private List<Part> parts = new ArrayList<Part>();
-  
     public Row() {}
-
-    public void addPart(Part part) {
-        parts.add(part);
-    }
-
-    public void addCategory(Category category) {
-        categories.add(category);
-    }
-
-    public void addTag(Tag tag) {
-        tags.add(tag);
-    }
+    
 
     public void addContact(Contact contact) {
-        contacts.add(contact);
+        this.contacts.add(contact);
     }
+    
 
-    //
-
+    /* GET & SET */
+    
     public long getId() {
         return id;
     }
@@ -81,6 +53,14 @@ public class Row {
 
     public void setSummary(String summary) {
         this.summary = summary;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
     }
 
     public String getNote() {
@@ -107,15 +87,7 @@ public class Row {
         this.date = date;
     }
 
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public boolean getDirection() {
+    public boolean isDirection() {
         return direction;
     }
 
@@ -123,45 +95,38 @@ public class Row {
         this.direction = direction;
     }
 
-    public ForeignCollection<Category> getCategories() {
-        return categories;
+    public Category getCategory() {
+        return category;
     }
 
-    public void setCategories(ForeignCollection<Category> categories) {
-        this.categories = categories;
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
-    public ForeignCollection<Tag> getTags() {
+    public List<Tag> getTags() {
         return tags;
     }
 
-    public void setTags(ForeignCollection<Tag> tags) {
+    public void setTags(List<Tag> tags) {
         this.tags = tags;
     }
 
-    public ForeignCollection<Contact> getContacts() {
+    public List<Contact> getContacts() {
         return contacts;
     }
 
-    public void setContacts(ForeignCollection<Contact> contacts) {
+    public void setContacts(List<Contact> contacts) {
         this.contacts = contacts;
-    }
-
-    public List<Part> getParts() {
-        return parts;
-    }
-
-    public void setParts(List<Part> parts) {
-        this.parts = parts;
     }
 
     @Override
     public String toString() {
-        return "Row [id=" + id + ", parts=" + parts + ", summary=" + summary
-                + ", content=" + content + ", note=" + note + ", categories="
-                + categories + ", tags=" + tags + ", contacts=" + contacts
-                + ", price=" + price + ", date=" + date + ", direction="
-                + direction + "]";
+        return "Row [id=" + id + ", summary=" + summary + ", content="
+                + content + ", note=" + note + ", price=" + price + ", date="
+                + date + ", direction=" + direction + ", category=" + category
+                + ", tags=" + tags + ", contacts=" + contacts + "]";
     }
+
+
     
 }

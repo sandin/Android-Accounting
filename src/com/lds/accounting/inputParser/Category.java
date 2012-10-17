@@ -1,18 +1,12 @@
 package com.lds.accounting.inputParser;
 
-import com.j256.ormlite.field.DatabaseField;
-import com.j256.ormlite.table.DatabaseTable;
 
-@DatabaseTable(tableName = "category")
 public class Category implements Part {
 
-    @DatabaseField(generatedId = true)
     private long id;
     
-    @DatabaseField
     private String name;
     
-    @DatabaseField(canBeNull = false, foreign = true)
     private Row row;
 
     public Category() {
