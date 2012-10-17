@@ -1,6 +1,5 @@
 package com.lds.accounting;
 
-import java.sql.SQLException;
 import java.util.Date;
 import java.util.List;
 
@@ -18,8 +17,6 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-import com.j256.ormlite.dao.Dao;
-import com.lds.accounting.dao.DaoFactory;
 import com.lds.accounting.inputParser.InputParser;
 import com.lds.accounting.inputParser.Row;
 import com.libs4and.widget.ArrayAdapter;
@@ -31,14 +28,11 @@ public class MainActivity extends Activity {
     private ListAdapter adapter;
     private EditText editText;
     
-    Dao<Row, Long> rowDao;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        
-        rowDao = DaoFactory.createDao(getApplicationContext(), Row.class);
         
         initViews();
         onRefresh();
@@ -67,24 +61,14 @@ public class MainActivity extends Activity {
         Log.i(TAG, "input: " + input);
         Row row = InputParser.parse(input);
         Log.i(TAG, "row: " + row);
-        try {
-            rowDao.create(row);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        RowDao.getInstance(this).insert(row);
         
         onRefresh();
     }
     
     private void onRefresh() {
         List<Row> list = null;
-        try {
-            list = rowDao.queryForAll();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+        list = RowDao.getInstance(this).queryForAll();
         System.out.println("list:" + list);
         if (list != null) {
             adapter.refresh(list);
