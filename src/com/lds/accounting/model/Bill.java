@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
 @DatabaseTable(tableName = "bills")
 public class Bill {
 	
-	@DatabaseField(id = true)
+	@DatabaseField(generatedId = true)
 	private int id;
 	
 	/**
