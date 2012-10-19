@@ -5,13 +5,20 @@ import java.util.List;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.KeyEvent;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -25,8 +32,10 @@ import com.lds.accounting.inputParser.InputParser;
 import com.lds.accounting.inputParser.Row;
 import com.libs4and.widget.ArrayAdapter;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnItemClickListener {
     private static final String TAG = MainActivity.class.getSimpleName();
+
+    private static final int CONTEXT_DELETE_ID = 1;
     
     private ListView listView;
     private ListAdapter adapter;
@@ -38,6 +47,10 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (! UserManger.getInstance(this).isLogin()) {
+            startActivity(new Intent(this, LoginActivity.class));
+        }
+        
         setContentView(R.layout.activity_main);
         
         AccountDatabase database = AccountDatabase.getInstance(this);
@@ -52,6 +65,8 @@ public class MainActivity extends Activity {
         listView = (ListView) findViewById(R.id.list);
         adapter = new ListAdapter(this);
         listView.setAdapter(adapter);
+        listView.setOnItemClickListener(this);
+        registerForContextMenu(listView);
         
         editText = (EditText) findViewById(R.id.input);
         editText.setOnEditorActionListener(new OnEditorActionListener() {
@@ -105,10 +120,53 @@ public class MainActivity extends Activity {
         return true;
     }
     
+    @Override
+    public void onItemClick(AdapterView<?> arg0, View arg1, int position, long id) {
+       
+    }
+    
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+            ContextMenuInfo menuInfo) {
+        // TODO Auto-generated method stub
+        super.onCreateContextMenu(menu, v, menuInfo);
+        
+        //AdapterView.AdapterContextMenuInfo info = (AdapterContextMenuInfo) menuInfo;
+        //item = adapter.getItem(info.position);
+        menu.add(0, CONTEXT_DELETE_ID, 0, R.string.delete);
+    }
+    
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        AdapterContextMenuInfo info = (AdapterContextMenuInfo) item
+                .getMenuInfo();
+        
+        Row bean = (Row) adapter.getItem(info.position);
+        long id = bean.getId();
+        if (id > 0) {
+            if (rowDao.delete(id)) {
+                adapter.remove(bean);
+            }
+        } else {
+            Log.e(TAG, "Item id 不正确: " + id);
+        }
+        
+        return super.onContextItemSelected(item);
+    }
+    
     private class ListAdapter extends ArrayAdapter<Row> {
 
         public ListAdapter(Context context) {
             super(context);
+        }
+        
+        @Override
+        public long getItemId(int position) {
+            Row item = list.get(position);
+            if (item != null) {
+                return item.getId();
+            }
+            return -1;
         }
 
         @Override
@@ -151,6 +209,7 @@ public class MainActivity extends Activity {
         }
         
     }
+
     
     
     

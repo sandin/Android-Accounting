@@ -14,6 +14,8 @@ import com.lds.accounting.db.AccountDatabase;
 public abstract class BaseDao<T> {
     protected static final String TAG = "Dao";
     protected static final boolean DEBUG = true;
+    
+    protected String primaryKey = BaseColumns._ID;
 
     protected AccountDatabase database;
     protected String tableName;
@@ -29,6 +31,12 @@ public abstract class BaseDao<T> {
         long id = db.insert(tableName, null, objectToValues(row));
         db.close();
         return id;
+    }
+    
+    public boolean delete(long id) {
+        SQLiteDatabase db = database.getDb(true);
+        int affectedRows = db.delete(tableName, primaryKey + "=" + id, null);
+        return affectedRows > 0;
     }
 
     /**
@@ -49,14 +57,14 @@ public abstract class BaseDao<T> {
         String[] columns = null;
         Cursor cursor = db.query(tableName, columns, selection, selectionArgs, null, null, orderBy);
         if (cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
             return cursorToObject(cursor);
         }
         return null;
     }
     
     public T findById(long id) {
-        String pKey = BaseColumns._ID;
-        return findOneByFields(pKey + "=" + id, null, pKey);
+        return findOneByFields(primaryKey + "=" + id, null, null);
     }
 
     public List<T> cursorToList(Cursor cursor) {

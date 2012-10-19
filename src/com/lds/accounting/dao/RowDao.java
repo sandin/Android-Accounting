@@ -50,7 +50,7 @@ public class RowDao extends BaseDao<Row> {
         item.setPrice(cursor.getDouble(cursor.getColumnIndexOrThrow(AccountCols.PRICE)));
         item.setSummary(cursor.getString(cursor.getColumnIndexOrThrow(AccountCols.SUMMARY)));
         int i = cursor.getColumnIndex("category_name");
-        if (i == -1) {
+        if (i != -1) {
             item.setCategory(new Category(cursor.getString(i)));
         } else {
             Log.e(TAG, "no category");
